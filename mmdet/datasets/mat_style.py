@@ -20,7 +20,10 @@ class MatSTUDataset(CustomDataset):
         # store the annnotation
         self.bboxes = mmcv.load( ann_file )
 
-        img_names = natsort.natsorted(glob.glob( osp.join(self.data_root, "*.jpg") ))
+        if not self.test_mode:
+            img_names = natsort.natsorted(glob.glob( osp.join(self.data_root, "detection_test_data","*.jpg") ))
+        else:
+            img_names = natsort.natsorted(glob.glob(osp.join(self.data_root, "detection_real_test_data","*.jpg")))
 
         def dir2dict(filedir):
             # all 1024 * 768 * 3
