@@ -6,7 +6,9 @@ import natsort
 import glob
 
 from .custom import CustomDataset
+from .registry import DATASETS
 
+@DATASETS.register_module
 class MatSTUDataset(CustomDataset):
     '''
     # custom dataset for .mat
@@ -21,9 +23,9 @@ class MatSTUDataset(CustomDataset):
         self.bboxes = mmcv.load( ann_file )
 
         if not self.test_mode:
-            img_names = natsort.natsorted(glob.glob( osp.join(self.data_root, "detection_test_data","*.jpg") ))
+            img_names = natsort.natsorted(glob.glob( osp.join('data', "detection_test_data","*.jpg") ))
         else:
-            img_names = natsort.natsorted(glob.glob(osp.join(self.data_root, "detection_real_test_data","*.jpg")))
+            img_names = natsort.natsorted(glob.glob(osp.join('data/detection_data', "detection_real_test_data","*.jpg")))
 
         def dir2dict(filedir):
             # all 1024 * 768 * 3
@@ -31,7 +33,7 @@ class MatSTUDataset(CustomDataset):
 
         img_infos = list(map(lambda x: dir2dict(x), img_names))
 
-        assert( len(self.data) == len(img_infos) )
+        assert( len(self.bboxes) == len(img_infos) )
 
         return img_infos
 
