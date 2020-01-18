@@ -171,6 +171,6 @@ total_epochs = 120
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = './work_dirs/stu_faster_rcnn_x101_32x4d_fpn_1x'
-load_from = './checkpoints/faster_rcnn_x101_32x4d_fpn_2x_20181218-0ed58946.pth '
+load_from = './checkpoints/faster_rcnn_x101_32x4d_fpn_1x_20181218-ad81c133.pth'
 resume_from = None
 workflow = [('train', 1)]
