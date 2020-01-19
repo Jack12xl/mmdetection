@@ -155,7 +155,7 @@ lr_config = dict(
     warmup_iters=500,
     warmup_ratio=1.0 / 3,
     step=[8, 11])
-checkpoint_config = dict(interval=1)
+checkpoint_config = dict(interval=10)
 # yapf:disable
 log_config = dict(
     interval=50,
@@ -165,10 +165,10 @@ log_config = dict(
     ])
 # yapf:enable
 # runtime settings
-total_epochs = 120
+total_epochs = 80
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/stu_faster_101'
+work_dir = './work_dirs/stu_faster_rcnn_r101_fpn_1x'
 load_from = './checkpoints/faster_rcnn_r101_fpn_1x_20181129-d1468807.pth'
 resume_from = None
 workflow = [('train', 1)]
