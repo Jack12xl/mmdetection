@@ -104,7 +104,7 @@ lr_config = dict(
     warmup_iters=500,
     warmup_ratio=1.0 / 3,
     step=[8, 11])
-checkpoint_config = dict(interval=1)
+checkpoint_config = dict(interval=10)
 # yapf:disable
 log_config = dict(
     interval=50,
@@ -120,5 +120,5 @@ dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = './work_dirs/stu_retinanet_free_anchor_r101_fpn_1x/'
 load_from = None
-resume_from = './work_dirs/stu_retinanet_free_anchor_r101_fpn_1x/latest.pth'
+resume_from = './work_dirs/stu_retinanet_free_anchor_r101_fpn_1x/epoch_50.pth'
 workflow = [('train', 1)]

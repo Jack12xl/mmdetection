@@ -48,6 +48,12 @@ def main():
     MSE = np.mean(np.power((gts - res), 2))
     MAE = np.mean(np.abs(gts - res))
 
+    print("GT:")
+    print(gts)
+
+    print('Predict:')
+    print(res)
+
     print("MSE: {}".format(MSE))
     print("MAE: {}".format(MAE))
 
