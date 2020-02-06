@@ -89,13 +89,13 @@ train_cfg = dict(
 test_cfg = dict(
     rpn=dict(
         nms_across_levels=False,
-        nms_pre=5000,
-        nms_post=5000,
-        max_num=5000,
-        nms_thr=0.3,
+        nms_pre=22500,
+        nms_post=22500,
+        max_num=22500,
+        nms_thr=0.43,
         min_bbox_size=0),
     rcnn=dict(
-        score_thr=0.05, nms=dict(type='soft_nms', iou_thr=0.5, min_score=0.05), max_per_img=600)
+        score_thr=0.5, nms=dict(type='nms', iou_thr=0.5), max_per_img=600)
     # soft-nms is also supported for rcnn testing
     # e.g., nms=dict(type='soft_nms', iou_thr=0.5, min_score=0.05)
 )
@@ -166,10 +166,10 @@ log_config = dict(
     ])
 # yapf:enable
 # runtime settings
-total_epochs = 40
+total_epochs = 120
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = './work_dirs/stu_faster_rcnn_r101_fpn_1x_rpn4000'
-load_from = './work_dirs/stu_faster_rcnn_r101_fpn_1x_rpn4000/latest.pth'
-resume_from = None
+load_from = None
+resume_from = './work_dirs/stu_faster_rcnn_r101_fpn_1x_rpn4000/epoch_80.pth'
 workflow = [('train', 1)]

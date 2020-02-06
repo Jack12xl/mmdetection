@@ -1,4 +1,5 @@
 # model settings
+# this configure tries to remove multi scale
 import os.path as osp
 
 model = dict(
@@ -8,12 +9,12 @@ model = dict(
         type='ResNet',
         depth=50,
         num_stages=4,
-        out_indices=(0, 1, 2, 3),
+        out_indices=[1],
         frozen_stages=1,
         style='pytorch'),
     neck=dict(
         type='FPN',
-        in_channels=[256, 512, 1024, 2048],
+        in_channels=[512],
         out_channels=256,
         num_outs=5),
     rpn_head=dict(
@@ -23,8 +24,8 @@ model = dict(
         anchor_scales=[8],
         anchor_ratios=[0.5, 1.0, 2.0],
         anchor_strides=[4, 8, 16, 32, 64],
-        target_means=[.0, .0, .0, .0],
-        target_stds=[1.0, 1.0, 1.0, 1.0],
+        target_means=[.0],
+        target_stds=[1.0],
         loss_cls=dict(
             type='CrossEntropyLoss', use_sigmoid=True, loss_weight=1.0),
         loss_bbox=dict(type='SmoothL1Loss', beta=1.0 / 9.0, loss_weight=1.0)),
@@ -32,7 +33,7 @@ model = dict(
         type='SingleRoIExtractor',
         roi_layer=dict(type='RoIAlign', out_size=7, sample_num=2),
         out_channels=256,
-        featmap_strides=[4, 8, 16, 32]),
+        featmap_strides=[8]),
     bbox_head=dict(
         type='SharedFCBBoxHead',
         num_fcs=2,
@@ -40,8 +41,8 @@ model = dict(
         fc_out_channels=1024,
         roi_feat_size=7,
         num_classes=2,
-        target_means=[0., 0., 0., 0.],
-        target_stds=[0.1, 0.1, 0.2, 0.2],
+        target_means=[0.],
+        target_stds=[0.1],
         reg_class_agnostic=False,
         loss_cls=dict(
             type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0),
@@ -90,13 +91,13 @@ train_cfg = dict(
 test_cfg = dict(
     rpn=dict(
         nms_across_levels=False,
-        nms_pre=22000,
-        nms_post=22000,
-        max_num=22000,
+        nms_pre=25000,
+        nms_post=25000,
+        max_num=25000,
         nms_thr=0.375,
         min_bbox_size=0),
     rcnn=dict(
-        score_thr=0.5, nms=dict(type='nms', iou_thr=0.5), max_per_img=600)
+        score_thr=0.5, nms=dict(type='nms', iou_thr=0.4), max_per_img=600)
 
 
 # test_cfg = dict(
@@ -143,8 +144,8 @@ test_pipeline = [
         ])
 ]
 data = dict(
-    imgs_per_gpu=2,
-    workers_per_gpu=2,
+    imgs_per_gpu=4,
+    workers_per_gpu=4,
     train=dict(
         type=dataset_type,
         ann_file=osp.join("data", "detection_data", "partb_train.pkl"),
@@ -169,7 +170,7 @@ lr_config = dict(
     warmup_iters=500,
     warmup_ratio=1.0 / 3,
     step=[8, 11])
-checkpoint_config = dict(interval=10)
+checkpoint_config = dict(interval=20)
 # yapf:disable
 log_config = dict(
     interval=50,
@@ -179,10 +180,10 @@ log_config = dict(
     ])
 # yapf:enable
 # runtime settings
-total_epochs = 80
+total_epochs = 100
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/stu_faster_rcnn_r50_fpn_1x_'
+work_dir = './work_dirs/stu_faster_vanilla_rcnn_r50_fpn_1x_'
 load_from = "./checkpoints/faster_rcnn_r50_fpn_1x_20181010-3d1b3351.pth"
-resume_from = None
+resume_from = "./work_dirs/stu_faster_vanilla_rcnn_r50_fpn_1x_/latest.pth"
 workflow = [('train', 1)]
