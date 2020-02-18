@@ -24,8 +24,8 @@ model = dict(
         anchor_scales=[8],
         anchor_ratios=[0.5, 1.0, 2.0],
         anchor_strides=[4, 8, 16, 32, 64],
-        target_means=[.0],
-        target_stds=[1.0],
+        target_means=[.0, .0, .0, .0],
+        target_stds=[1.0, 1.0, 1.0, 1.0],
         loss_cls=dict(
             type='CrossEntropyLoss', use_sigmoid=True, loss_weight=1.0),
         loss_bbox=dict(type='SmoothL1Loss', beta=1.0 / 9.0, loss_weight=1.0)),
@@ -33,7 +33,8 @@ model = dict(
         type='SingleRoIExtractor',
         roi_layer=dict(type='RoIAlign', out_size=7, sample_num=2),
         out_channels=256,
-        featmap_strides=[8]),
+        featmap_strides=[16]),
+    # faster rcnn stride is 16
     bbox_head=dict(
         type='SharedFCBBoxHead',
         num_fcs=2,
@@ -41,8 +42,8 @@ model = dict(
         fc_out_channels=1024,
         roi_feat_size=7,
         num_classes=2,
-        target_means=[0.],
-        target_stds=[0.1],
+        target_means=[0., 0., 0., 0.],
+        target_stds=[0.1, 0.1, 0.2, 0.2],
         reg_class_agnostic=False,
         loss_cls=dict(
             type='CrossEntropyLoss', use_sigmoid=False, loss_weight=1.0),
@@ -91,13 +92,13 @@ train_cfg = dict(
 test_cfg = dict(
     rpn=dict(
         nms_across_levels=False,
-        nms_pre=25000,
-        nms_post=25000,
-        max_num=25000,
+        nms_pre=40000,
+        nms_post=40000,
+        max_num=40000,
         nms_thr=0.375,
         min_bbox_size=0),
     rcnn=dict(
-        score_thr=0.5, nms=dict(type='nms', iou_thr=0.4), max_per_img=600)
+        score_thr=0.5, nms=dict(type='nms', iou_thr=0.5), max_per_img=600)
 
 
 # test_cfg = dict(
@@ -185,5 +186,5 @@ dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = './work_dirs/stu_faster_vanilla_rcnn_r50_fpn_1x_'
 load_from = "./checkpoints/faster_rcnn_r50_fpn_1x_20181010-3d1b3351.pth"
-resume_from = "./work_dirs/stu_faster_vanilla_rcnn_r50_fpn_1x_/latest.pth"
+resume_from = "./work_dirs/stu_faster_vanilla_rcnn_r50_fpn_1x_/epoch_80.pth"
 workflow = [('train', 1)]
