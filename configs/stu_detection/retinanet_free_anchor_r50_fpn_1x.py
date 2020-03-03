@@ -1,3 +1,4 @@
+import os.path as osp
 # model settings
 model = dict(
     type='RetinaNet',
@@ -18,7 +19,7 @@ model = dict(
         num_outs=5),
     bbox_head=dict(
         type='FreeAnchorRetinaHead',
-        num_classes=81,
+        num_classes=2,
         in_channels=256,
         stacked_convs=4,
         feat_channels=256,
@@ -41,14 +42,14 @@ train_cfg = dict(
     pos_weight=-1,
     debug=False)
 test_cfg = dict(
-    nms_pre=1000,
+    nms_pre=2000,
     min_bbox_size=0,
-    score_thr=0.05,
+    score_thr=0.15,
     nms=dict(type='nms', iou_thr=0.5),
-    max_per_img=100)
+    max_per_img=600)
 # dataset settings
-dataset_type = 'CocoDataset'
-data_root = 'data/coco/'
+dataset_type = 'MatSTUDataset'
+data_root = ''
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 train_pipeline = [
@@ -81,18 +82,17 @@ data = dict(
     workers_per_gpu=2,
     train=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/instances_train2017.json',
-        img_prefix=data_root + 'train2017/',
-        pipeline=train_pipeline),
+        ann_file=osp.join("data", "detection_data", "partb_train.pkl"),
+        pipeline=train_pipeline,
+        data_root=data_root
+    ),
     val=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/instances_val2017.json',
-        img_prefix=data_root + 'val2017/',
+        ann_file=osp.join("data", "detection_data", "partb_test.pkl"),
         pipeline=test_pipeline),
     test=dict(
         type=dataset_type,
         ann_file=data_root + 'annotations/instances_val2017.json',
-        img_prefix=data_root + 'val2017/',
         pipeline=test_pipeline))
 # optimizer
 optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0001)
@@ -104,7 +104,7 @@ lr_config = dict(
     warmup_iters=500,
     warmup_ratio=1.0 / 3,
     step=[8, 11])
-checkpoint_config = dict(interval=1)
+checkpoint_config = dict(interval=10)
 # yapf:disable
 log_config = dict(
     interval=50,
@@ -114,11 +114,11 @@ log_config = dict(
     ])
 # yapf:enable
 # runtime settings
-total_epochs = 12
-device_ids = range(8)
+total_epochs = 80
+# device_ids = [3]
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = './work_dirs/stu_retinanet_free_anchor_r50_fpn_1x'
 load_from = None
-resume_from = None
+resume_from = './work_dirs/stu_retinanet_free_anchor_r50_fpn_1x/latest.pth'
 workflow = [('train', 1)]
