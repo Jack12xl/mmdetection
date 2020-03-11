@@ -9,7 +9,7 @@ from mmdet.ops import ContextBlock
 from mmdet.utils import get_root_logger
 from ..registry import BACKBONES
 from ..utils import build_conv_layer, build_norm_layer
-
+from more_itertools import locate
 
 class BasicBlock(nn.Module):
     expansion = 1
@@ -498,12 +498,16 @@ class ResNet(nn.Module):
         x = self.norm1(x)
         x = self.relu(x)
         x = self.maxpool(x)
-        outs = []
+        # Jack12 : let output obey order of out_indices
+        outs = [0] * len(self.out_indices)
         for i, layer_name in enumerate(self.res_layers):
             res_layer = getattr(self, layer_name)
             x = res_layer(x)
             if i in self.out_indices:
-                outs.append(x)
+                # use locate to get get idxes list
+                idxes = list(locate(self.out_indices, lambda x:x == i))
+                for idx in idxes:
+                    outs[idx] = x
         return tuple(outs)
 
     def train(self, mode=True):
