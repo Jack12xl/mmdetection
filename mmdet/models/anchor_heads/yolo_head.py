@@ -23,7 +23,7 @@ _EPSILON = 1e-6
 class YoloHead(nn.Module):
 
     num_scales = 3
-    num_classes_no_bkg = 2
+    num_classes_no_bkg = 1
     num_classes_w_bkg = num_classes_no_bkg + 1
     num_classes = num_classes_w_bkg
     num_anchors_per_scale = 3

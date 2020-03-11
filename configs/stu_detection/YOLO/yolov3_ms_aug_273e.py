@@ -26,9 +26,9 @@ train_cfg = dict(
     xy_use_logit=False,
     debug=False)
 test_cfg = dict(
-    nms_pre=1000,
-    min_bbox_size=0,
-    score_thr=0.05,
+    nms_pre=600,
+    min_bbox_size=20,
+    score_thr=0.8,
     conf_thr=0.005,
     nms=dict(type='nms', iou_thr=0.45),
     max_per_img=600)
@@ -160,7 +160,7 @@ lr_config = dict(
     warmup_iters=2000,  # same as burn-in in darknet
     warmup_ratio=0.1,
     step=[218, 246])
-checkpoint_config = dict(interval=20)
+checkpoint_config = dict(interval=50)
 # yapf:disable
 log_config = dict(
     interval=50,
@@ -170,11 +170,11 @@ log_config = dict(
     ])
 # yapf:enable
 # runtime settings
-total_epochs = 100
+total_epochs = 300
 device_ids = [1]
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 work_dir = './work_dirs/yolo_stu'
 load_from = None
-resume_from = None
+resume_from = './work_dirs/yolo_stu'
 workflow = [('train', 1)]
