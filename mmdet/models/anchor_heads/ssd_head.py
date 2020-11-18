@@ -50,7 +50,8 @@ class SSDHead(AnchorHead):
         min_ratio, max_ratio = basesize_ratio_range
         min_ratio = int(min_ratio * 100)
         max_ratio = int(max_ratio * 100)
-        step = int(np.floor(max_ratio - min_ratio) / (len(in_channels) - 2))
+        # step = int(np.floor(max_ratio - min_ratio) / (len(in_channels) - 2))
+        step = int(np.floor(max_ratio - min_ratio) / (len(in_channels)))
         min_sizes = []
         max_sizes = []
         for r in range(int(min_ratio), int(max_ratio) + 1, step):
@@ -171,6 +172,7 @@ class SSDHead(AnchorHead):
                 num_images, -1, self.cls_out_channels) for s in cls_scores
         ], 1)
         all_labels = torch.cat(labels_list, -1).view(num_images, -1)
+
         all_label_weights = torch.cat(label_weights_list,
                                       -1).view(num_images, -1)
         all_bbox_preds = torch.cat([

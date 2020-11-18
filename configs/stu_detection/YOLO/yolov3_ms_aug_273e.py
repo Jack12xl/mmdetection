@@ -26,11 +26,11 @@ train_cfg = dict(
     xy_use_logit=False,
     debug=False)
 test_cfg = dict(
-    nms_pre=600,
+    nms_pre=500,
     min_bbox_size=20,
-    score_thr=0.8,
-    conf_thr=0.005,
-    nms=dict(type='nms', iou_thr=0.45),
+    score_thr=0.99,
+    conf_thr=0.5,
+    nms=dict(type='nms', iou_thr=0),
     max_per_img=600)
 
 # dataset settings

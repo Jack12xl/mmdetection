@@ -42,11 +42,11 @@ train_cfg = dict(
     pos_weight=-1,
     debug=False)
 test_cfg = dict(
-    nms_pre=3000,
+    nms_pre=4000,
     min_bbox_size=0,
-    score_thr=0.20,
+    score_thr=0.50,
     # score_thr=0.05,
-    nms=dict(type='nms', iou_thr=0.5),
+    nms=dict(type='nms', iou_thr=0.1),
     max_per_img=600)
 # dataset settings
 dataset_type = 'MatSTUDataset'
